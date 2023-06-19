@@ -6,6 +6,7 @@ messages:
   command-kick: "&cKicked the player {0} for the reason: {1}"
   command-kick-no-reason: "&cKicked the player {0}"
   command-gamemode: "&6Updated gamemode to {0}"
+  command-messages: "Messages has been reloaded"
   no-permission: "&cYou do not have permission to use that command!"
   invalid-usage: "&cInvalid command usage!"
   player-not-online: "&cPlayer is not online!"

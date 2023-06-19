@@ -31,14 +31,25 @@ import java.util.Map;
 
 public class MessagesManager {
 
+    private File file;
+    private FileConfiguration config;
     private Map<String, String> messages;
 
-    public MessagesManager() {
+    public MessagesManager(File file) throws IOException {
+        this.file = file;
+        config = new FileConfiguration(this.file);
         messages = new HashMap<>();
     }
 
-    public void loadDefaultMessageFile(File file) throws IOException {
-        FileConfiguration config = new FileConfiguration(file);
+    public void loadMessages() {
+        if (!messages.isEmpty()) {
+            messages.clear();
+
+            try {
+                config.reloadConfig(file);
+            } catch (Exception e) {}
+        }
+
         try {
             for (Object obj : config.get("messages", Map.class).keySet()) {
                 String key = (String) obj;

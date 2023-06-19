@@ -183,6 +183,21 @@ public class DefaultCommands implements CommandExecutor, TabCompletor {
 			}
 			return;
 		}
+
+		if (args[0].equalsIgnoreCase("messages")) {
+			if (sender.hasPermission("limboserver.messages")) {
+				if (args.length != 2) {
+					sender.sendMessage(messages.getMessage("invalid-usage"));
+				} else if (!args[1].equalsIgnoreCase("reload")) {
+					sender.sendMessage(messages.getMessage("invalid-usage"));
+				} else {
+					messages.loadMessages();
+					sender.sendMessage(messages.getMessage("command-messages"));
+				}
+			} else {
+				sender.sendMessage(messages.getMessage("no-permission"));
+			}
+		}
 	}
 	
 	@Override

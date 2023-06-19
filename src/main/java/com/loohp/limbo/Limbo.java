@@ -336,8 +336,8 @@ public final class Limbo {
         scheduler = new LimboScheduler();
 		tick = new Tick(this);
 
-		messageManager = new MessagesManager();
-		messageManager.loadDefaultMessageFile(messageFile);
+		messageManager = new MessagesManager(messageFile);
+		messageManager.loadMessages();
         
         permissionManager = new PermissionsManager();
         permissionManager.loadDefaultPermissionFile(permissionFile);     
