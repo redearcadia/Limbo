@@ -1,0 +1,13 @@
+messages:
+  command-version: "&7This server is running Limbo version {0} (MC: {1})"
+  command-spawn: "&6Teleporting you to spawn!"
+  command-spawn-other: "&6Teleporting {0} to spawn!"
+  command-whitelist: "Whitelist has been reloaded"
+  command-kick: "&cKicked the player {0} for the reason: {1}"
+  command-kick-no-reason: "&cKicked the player {0}"
+  command-gamemode: "&6Updated gamemode to {0}"
+  no-permission: "&cYou do not have permission to use that command!"
+  invalid-usage: "&cInvalid command usage!"
+  player-not-online: "&cPlayer is not online!"
+  specify-player: "&cYou have to specifiy a player!"
+  shutdown: "Server closed"

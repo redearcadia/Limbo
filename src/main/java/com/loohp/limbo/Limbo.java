@@ -33,6 +33,7 @@ import com.loohp.limbo.inventory.Inventory;
 import com.loohp.limbo.inventory.InventoryHolder;
 import com.loohp.limbo.inventory.InventoryType;
 import com.loohp.limbo.location.Location;
+import com.loohp.limbo.messages.MessagesManager;
 import com.loohp.limbo.metrics.Metrics;
 import com.loohp.limbo.network.ServerConnection;
 import com.loohp.limbo.network.protocol.packets.Packet;
@@ -157,6 +158,7 @@ public final class Limbo {
 	
 	private final PluginManager pluginManager;
 	private final EventsManager eventsManager;
+	private final MessagesManager messageManager;
 	private final PermissionsManager permissionManager;
 	private final File pluginFolder;
 	
@@ -305,6 +307,16 @@ public final class Limbo {
 			console.sendMessage("");
 			System.exit(2);
 		}
+
+		String messageName = "message.yml";
+		File messageFile = new File(messageName);
+		if (!messageFile.exists()) {
+			try (InputStream in = getClass().getClassLoader().getResourceAsStream(messageName)) {
+				Files.copy(in, messageFile.toPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		
 		String permissionName = "permission.yml";
         File permissionFile = new File(permissionName);
@@ -318,6 +330,9 @@ public final class Limbo {
 
         scheduler = new LimboScheduler();
 		tick = new Tick(this);
+
+		messageManager = new MessagesManager();
+		messageManager.loadDefaultMessageFile(messageFile);
         
         permissionManager = new PermissionsManager();
         permissionManager.loadDefaultPermissionFile(permissionFile);     
@@ -372,6 +387,10 @@ public final class Limbo {
 
 	public DimensionRegistry getDimensionRegistry() {
 		return dimensionRegistry;
+	}
+
+	public MessagesManager getMessagesManager() {
+		return messageManager;
 	}
 
 	public PermissionsManager getPermissionsManager() {
@@ -568,7 +587,7 @@ public final class Limbo {
 		tick.waitAndKillThreads(5000);
 		
 		for (Player player : getPlayers()) {
-			player.disconnect("Server closed");
+			player.disconnect(messageManager.getMessage("shutdown"));
 		}
 		while (!getPlayers().isEmpty()) {
 			try {

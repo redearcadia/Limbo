@@ -21,6 +21,7 @@ package com.loohp.limbo.commands;
 
 import com.loohp.limbo.Console;
 import com.loohp.limbo.Limbo;
+import com.loohp.limbo.messages.MessagesManager;
 import com.loohp.limbo.player.Player;
 import com.loohp.limbo.utils.GameMode;
 import net.kyori.adventure.text.Component;
@@ -39,11 +40,13 @@ public class DefaultCommands implements CommandExecutor, TabCompletor {
 			return;
 		}
 
+		MessagesManager messages = Limbo.getInstance().getMessagesManager();
+
 		if (args[0].equalsIgnoreCase("version")) {
 			if (sender.hasPermission("limboserver.version")) {
-				sender.sendMessage(ChatColor.GRAY + "This server is running Limbo version " + Limbo.getInstance().LIMBO_IMPLEMENTATION_VERSION + " (MC: " + Limbo.getInstance().SERVER_IMPLEMENTATION_VERSION + ")");
+				sender.sendMessage(messages.getMessage("command-version", Limbo.getInstance().LIMBO_IMPLEMENTATION_VERSION, Limbo.getInstance().SERVER_IMPLEMENTATION_VERSION));
 			} else {
-				sender.sendMessage(ChatColor.RED + "You do not have permission to use that command!");
+				sender.sendMessage(messages.getMessage("no-permission"));
 			}
 			return;
 		}
@@ -53,20 +56,20 @@ public class DefaultCommands implements CommandExecutor, TabCompletor {
 				if (args.length == 1 && sender instanceof Player) {
 					Player player = (Player) sender;
 					player.teleport(Limbo.getInstance().getServerProperties().getWorldSpawn());
-					player.sendMessage(ChatColor.GOLD + "Teleporting you to spawn!");
+					player.sendMessage(messages.getMessage("command-spawn"));
 				} else if (args.length == 2) {
 					Player player = Limbo.getInstance().getPlayer(args[1]);
 					if (player != null) {
 						player.teleport(Limbo.getInstance().getServerProperties().getWorldSpawn());
-						sender.sendMessage(ChatColor.GOLD + "Teleporting " + player.getName() + " to spawn!");
+						sender.sendMessage(messages.getMessage("command-spawn-other", player.getName()));
 					} else {
-						sender.sendMessage(ChatColor.RED + "Player not found!");
+						sender.sendMessage(messages.getMessage("player-not-online"));
 					}
 				} else {
-					sender.sendMessage(ChatColor.RED + "Invalid command usage!");
+					sender.sendMessage(messages.getMessage("invalid-usage"));
 				}
 			} else {
-				sender.sendMessage(ChatColor.RED + "You do not have permission to use that command!");
+				sender.sendMessage(messages.getMessage("no-permission"));
 			}
 			return;
 		}
@@ -75,7 +78,7 @@ public class DefaultCommands implements CommandExecutor, TabCompletor {
 			if (sender.hasPermission("limboserver.stop")) {
 				Limbo.getInstance().stopServer();
 			} else {
-				sender.sendMessage(ChatColor.RED + "You do not have permission to use that command!");
+				sender.sendMessage(messages.getMessage("no-permission"));
 			}
 			return;
 		}
@@ -94,18 +97,18 @@ public class DefaultCommands implements CommandExecutor, TabCompletor {
 						}
 						player.disconnect(reason);
 						if (customReason) {
-							sender.sendMessage(ChatColor.RED + "Kicked the player " + player.getName() + " for the reason: " + LegacyComponentSerializer.legacySection().serialize(reason));
+							sender.sendMessage(messages.getMessage("command-kick", player.getName(), LegacyComponentSerializer.legacySection().serialize(reason)));
 						} else {
-							sender.sendMessage(ChatColor.RED + "Kicked the player " + player.getName());
+							sender.sendMessage(messages.getMessage("command-kick-no-reason", player.getName()));
 						}
 					} else {
-						sender.sendMessage(ChatColor.RED + "Player is not online!");
+						sender.sendMessage(messages.getMessage("player-not-online"));
 					}
 				} else {
-					sender.sendMessage(ChatColor.RED + "You have to specifiy a player!");
+					sender.sendMessage(messages.getMessage("specify-player"));
 				}
 			} else {
-				sender.sendMessage(ChatColor.RED + "You do not have permission to use that command!");
+				sender.sendMessage(messages.getMessage("no-permission"));
 			}
 			return;
 		}
@@ -115,7 +118,7 @@ public class DefaultCommands implements CommandExecutor, TabCompletor {
 				if (args.length > 1) {
 					Player player = args.length > 2 ? Limbo.getInstance().getPlayer(args[2]) : (sender instanceof Player ? (Player) sender : null);
 					if (!(sender instanceof Player)) {
-						sender.sendMessage(ChatColor.RED + "You have to specifiy a player!");
+						sender.sendMessage(messages.getMessage("specify-player"));
 					} else if (player != null) {
 						try {
 							player.setGamemode(GameMode.fromId(Integer.parseInt(args[1])));
@@ -123,19 +126,19 @@ public class DefaultCommands implements CommandExecutor, TabCompletor {
 							try {
 								player.setGamemode(GameMode.fromName(args[1]));
 							} catch (Exception e1) {
-								sender.sendMessage(ChatColor.RED + "Invalid usage!");
+								sender.sendMessage(messages.getMessage("invalid-usage"));
 								return;
 							}
 						}
-						sender.sendMessage(ChatColor.GOLD + "Updated gamemode to " + player.getGamemode().getName());
+						sender.sendMessage(messages.getMessage("command-gamemode", player.getGamemode().getName()));
 					} else {
-						sender.sendMessage(ChatColor.RED + "Player is not online!");
+						sender.sendMessage(messages.getMessage("player-not-online"));
 					}
 				} else {
-					sender.sendMessage(ChatColor.RED + "Invalid usage!");
+					sender.sendMessage(messages.getMessage("invalid-usage"));
 				}
 			} else {
-				sender.sendMessage(ChatColor.RED + "You do not have permission to use that command!");
+				sender.sendMessage(messages.getMessage("no-permission"));
 			}
 			return;
 		}
@@ -160,7 +163,7 @@ public class DefaultCommands implements CommandExecutor, TabCompletor {
 					}
 				}
 			} else {
-				sender.sendMessage(ChatColor.RED + "You do not have permission to use that command!");
+				sender.sendMessage(messages.getMessage("no-permission"));
 			}
 			return;
 		}
@@ -168,15 +171,15 @@ public class DefaultCommands implements CommandExecutor, TabCompletor {
 		if (args[0].equalsIgnoreCase("whitelist")) {
 			if (sender.hasPermission("limboserver.whitelist")) {
 				if (args.length != 2) {
-					sender.sendMessage(ChatColor.RED + "Invalid usage!");
+					sender.sendMessage(messages.getMessage("invalid-usage"));
 				} else if (!args[1].equalsIgnoreCase("reload")) {
-					sender.sendMessage(ChatColor.RED + "Invalid usage!");
+					sender.sendMessage(messages.getMessage("invalid-usage"));
 				} else {
 					Limbo.getInstance().getServerProperties().reloadWhitelist();
-					sender.sendMessage("Whitelist has been reloaded");
+					sender.sendMessage(messages.getMessage("command-whitelist"));
 				}
 			} else {
-				sender.sendMessage(ChatColor.RED + "You do not have permission to use that command!");
+				sender.sendMessage(messages.getMessage("no-permission"));
 			}
 			return;
 		}
