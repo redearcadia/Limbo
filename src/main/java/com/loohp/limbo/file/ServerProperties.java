@@ -23,6 +23,7 @@ import com.google.common.collect.Lists;
 import com.loohp.limbo.Console;
 import com.loohp.limbo.Limbo;
 import com.loohp.limbo.location.Location;
+import com.loohp.limbo.utils.ForwardingUtils;
 import com.loohp.limbo.utils.GameMode;
 import com.loohp.limbo.world.World;
 import net.kyori.adventure.key.Key;
@@ -72,6 +73,7 @@ public class ServerProperties {
 	private boolean bungeecord;
 	private boolean velocityModern;
 	private boolean bungeeGuard;
+	private ForwardingUtils.Type forwardType;
 	private List<String> forwardingSecrets;
 	private int viewDistance;
 	private double ticksPerSecond;
@@ -156,6 +158,16 @@ public class ServerProperties {
 				Limbo.getInstance().getConsole().sendMessage("Both Velocity Modern Forwarding and BungeeGuard are enabled! Because of this we always prefer Modern Forwarding, disabling BungeeGuard");
 				bungeeGuard = false;
 			}
+		}
+
+		if (velocityModern) {
+			forwardType = ForwardingUtils.Type.VELOCITY_MODERN;
+		} else if (bungeeGuard) {
+			forwardType = ForwardingUtils.Type.BUNGEEGUARD;
+		} else if (bungeecord) {
+			forwardType = ForwardingUtils.Type.BUNGEECORD;
+		} else {
+			forwardType = ForwardingUtils.Type.NONE;
 		}
 
 		viewDistance = Integer.parseInt(prop.getProperty("view-distance"));
@@ -255,15 +267,19 @@ public class ServerProperties {
 	}
 
 	public boolean isBungeecord() {
-		return bungeecord;
+		return forwardType == ForwardingUtils.Type.BUNGEECORD;
 	}
 
 	public boolean isVelocityModern() {
-		return velocityModern;
+		return forwardType == ForwardingUtils.Type.VELOCITY_MODERN;
 	}
 
 	public boolean isBungeeGuard() {
-		return bungeeGuard;
+		return forwardType == ForwardingUtils.Type.BUNGEEGUARD;
+	}
+
+	public ForwardingUtils.Type getForwardType() {
+		return forwardType;
 	}
 
 	public List<String> getForwardingSecrets() {

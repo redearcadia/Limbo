@@ -144,4 +144,11 @@ public class ForwardingUtils {
             return skinResponse;
         }
     }
+
+    public enum Type {
+        VELOCITY_MODERN,
+        BUNGEEGUARD,
+        BUNGEECORD,
+        NONE
+    }
 }

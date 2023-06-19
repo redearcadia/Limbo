@@ -204,12 +204,17 @@ public final class Limbo {
             }
         }
         properties = new ServerProperties(sp);
-        
-        if (!properties.isBungeecord()) {
-        	console.sendMessage("If you are using bungeecord, consider turning that on in the settings!");
-        } else {
-        	console.sendMessage("Starting Limbo server in bungeecord mode!");
-        }
+
+		switch (properties.getForwardType()) {
+			case NONE:
+				console.sendMessage("If you are using BungeeCord, consider turning that on in the settings!");
+			case BUNGEECORD:
+				console.sendMessage("Starting Limbo server in BungeeCord mode!");
+			case BUNGEEGUARD:
+				console.sendMessage("Starting Limbo server in BungeeGuard mode!");
+			case VELOCITY_MODERN:
+				console.sendMessage("Starting Limbo server in Velocity Modern mode!");
+		}
         
         internalDataFolder = new File("internal_data");
         if (!internalDataFolder.exists()) {
